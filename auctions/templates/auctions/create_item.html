@@ -1,0 +1,16 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+    <form action="{% url 'create_item' %}" method="post">
+        <label>Title</label>
+        <input type="text" name="title">
+
+        <label>Description</label>
+        <textarea name="description">
+
+        <label>Starting Price</label>
+        <input type="number" name="starting_bid">
+
+        <input type="submit" value="Create New Listing">
+    </form>
+{% endblock %}
