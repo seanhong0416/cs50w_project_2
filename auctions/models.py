@@ -6,6 +6,7 @@ class User(AbstractUser):
 
 class AuctionList(models.Model):
     title = models.CharField(max_length=64)
+    image = models.FileField()
     description = models.CharField(max_length=128)
     starting_bid = models.IntegerField()
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="my_selling_items")

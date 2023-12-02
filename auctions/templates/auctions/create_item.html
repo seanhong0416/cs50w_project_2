@@ -3,14 +3,32 @@
 {% block body %}
     <form action="{% url 'create_item' %}" method="post">
         <label>Title</label>
+        <br>
         <input type="text" name="title">
-
+        <br>
+        <label>Upload Item Image</label>
+        <br>
+        <input type="file" name="image" accept="image/*">
+        <br>
         <label>Description</label>
-        <textarea name="description">
-
+        <br>
+        <textarea name="description"></textarea>
+        <br>
+        <label>Choose Type of Item</label>
+        <br>
+        <select name="options">
+            <option value="fashion">Fashion</option>
+            <option value="toys">Toys</option>
+            <option value="electronics">Electronics</option>
+            <option value="home">Home</option>
+            <option value="sports">Sports</option>
+            <option value="other">Other</option>
+        </select>
+        <br>
         <label>Starting Price</label>
+        <br>
         <input type="number" name="starting_bid">
-
+        <br>
         <input type="submit" value="Create New Listing">
     </form>
 {% endblock %}
