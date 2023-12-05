@@ -1,7 +1,8 @@
 {% extends 'auctions/layout.html' %}
 
 {% block body %}
-    <form action="{% url 'create_item' %}" method="post">
+    <form action="{% url 'create_item' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
         <label>Title</label>
         <br>
         <input type="text" name="title">
@@ -16,7 +17,7 @@
         <br>
         <label>Choose Type of Item</label>
         <br>
-        <select name="options">
+        <select name="type">
             <option value="fashion">Fashion</option>
             <option value="toys">Toys</option>
             <option value="electronics">Electronics</option>
@@ -31,4 +32,12 @@
         <br>
         <input type="submit" value="Create New Listing">
     </form>
+    {{ img }}
+    <br>
+    {% if img is not None %}
+    if
+    <img src="{{img.image.url}}">
+    {% else %}
+    img is none
+    {% endif %}
 {% endblock %}

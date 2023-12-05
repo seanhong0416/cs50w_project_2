@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
+from .forms import ImageUploadForm
 from .models import User, AuctionList, Bids, Comments
 
 
@@ -68,12 +69,20 @@ def create_item(request):
 
     if request.method == "POST":
         title = request.POST["title"]
+        image = request.FILES["image"]
         description = request.POST["description"]
+        type = request.POST["type"]
         starting_bid = request.POST["starting_bid"]
-        user = request.user
-        winner = None
-        new_item = AuctionList(title=title, description=description, starting_bid=starting_bid, user=user, winner=winner)
+        owner = request.user
+
+        new_item = AuctionList(title=title, image=image, description=description, type = type, starting_bid=starting_bid, owner=owner)
         new_item.save()
-        return HttpResponseRedirect()
+
+        return render(request, "auctions/create_item.html",{
+            "img":new_item
+        })#HttpResponseRedirect(reverse("index"))
     else:
-        return render(request, "auctions/create_item.html")
+        form = ImageUploadForm()
+        return render(request, "auctions/create_item.html", {
+            "form":form
+        })
