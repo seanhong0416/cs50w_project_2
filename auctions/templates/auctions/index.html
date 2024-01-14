@@ -4,5 +4,28 @@
     <h2>Active Listings</h2>
     <a href="{% url 'create_item' %}">Create New Listing</a>
     <br>
-    TODO
+    {% for item in items %}
+    <a href="{% url 'listing' item.id%}">
+        <table class="listing_table" width="800px">
+            <tr>
+                <td rowspan="5" width="400px">
+                    <img src="{{item.image.url}}", width="400">
+                </td>
+                <td height="20vw">
+                    <h3>{{ item.title }}</h3>
+                </td>
+            </tr>
+            <tr>
+                <td height="20vw">
+                    <h3>Price:<span class="not_bold">{{ item.starting_bid }}</span></h3>
+                </td>
+            </tr>
+            <tr>
+                <td rowspan="3">
+                    {{ item.description }}
+                </td>
+            </tr>
+        </table>
+    </a>
+    {% endfor %}
 {% endblock %}

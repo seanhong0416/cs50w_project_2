@@ -1,0 +1,51 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>{{ item.title }}</h2>
+
+    <img src="{{ item.image.url }}", width="800">
+
+    <h2>
+        Price:
+        <span class="not_bold">
+            {{ price }}
+        </span>
+    </h2>
+
+    <h2>
+        Description:
+    </h2>
+    {{ item.description }}
+
+    <h2>
+        Current Bids:
+    </h2>
+    <form action="url '"></form>
+    {% if bids %}
+        <ul>
+            {% for bid in bids %}
+                <li>
+                    {{ bid }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        There Isn't Any Bid Yet!
+    {% endif %}
+
+    <h2>
+        Comments:
+    </h2>
+    {% if comments %}
+        <ul>
+            {% for comment in comments %}
+                <li>
+                    {{ comment }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        There Isn't Any Comment Yet!
+    {% endif %}
+
+{% endblock %}

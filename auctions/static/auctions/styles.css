@@ -1,3 +1,15 @@
 body {
     padding: 10px;
 }
+
+.not_bold{
+    font-weight: normal;
+}
+
+.listing_table{
+    border: 1px solid gainsboro;
+}
+
+td {
+    border: 1px solid gainsboro
+}

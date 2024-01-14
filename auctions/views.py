@@ -4,15 +4,16 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .forms import ImageUploadForm
 from .models import User, AuctionList, Bids, Comments
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    return render(request, "auctions/index.html", {
+        "items":AuctionList.objects.all(),
+    })
 
 
-def login_view(request):
+def login_view(request, original_page=None):
     if request.method == "POST":
 
         # Attempt to sign user in
@@ -23,7 +24,10 @@ def login_view(request):
         # Check if authentication successful
         if user is not None:
             login(request, user)
-            return HttpResponseRedirect(reverse("index"))
+            if original_page is not None:
+                return HttpResponseRedirect(original_page)
+            else:
+                return HttpResponseRedirect(reverse("index"))
         else:
             return render(request, "auctions/login.html", {
                 "message": "Invalid username and/or password."
@@ -32,9 +36,12 @@ def login_view(request):
         return render(request, "auctions/login.html")
 
 
-def logout_view(request):
+def logout_view(request, original_page=None):
     logout(request)
-    return HttpResponseRedirect(reverse("index"))
+    if original_page is not None:
+        return HttpResponseRedirect(original_page)
+    else:
+        return HttpResponseRedirect(reverse("index"))
 
 
 def register(request):
@@ -75,14 +82,33 @@ def create_item(request):
         starting_bid = request.POST["starting_bid"]
         owner = request.user
 
-        new_item = AuctionList(title=title, image=image, description=description, type = type, starting_bid=starting_bid, owner=owner)
+        new_item = AuctionList(title=title, image=image, description=description, type = type, starting_bid=starting_bid, owner=owner, is_closed=False)
         new_item.save()
 
-        return render(request, "auctions/create_item.html",{
-            "img":new_item
-        })#HttpResponseRedirect(reverse("index"))
+        return HttpResponseRedirect(reverse("index"))
     else:
-        form = ImageUploadForm()
-        return render(request, "auctions/create_item.html", {
-            "form":form
-        })
+        return render(request, "auctions/create_item.html")
+    
+def listing(request, item_id):
+    item = AuctionList.objects.get(pk=item_id)
+    bids = item.bids.order_by('-price').values()
+
+    if not bids:
+        price = item.starting_bid
+    else:
+        price = bids.first().price
+
+    #if user is None, then not logged in
+    user = None
+    if request.user.is_authenticated:
+        user=request.user
+    
+    return render(request, "auctions/item.html", {
+        "item":item,
+        "bids":bids,
+        "user":user,
+        "price":price,
+    })
+
+def add_bid(request):
+    pass

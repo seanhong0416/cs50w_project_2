@@ -8,4 +8,6 @@ urlpatterns = [
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register"),
     path("create_item", views.create_item, name="create_item"),
+    path("item/<str:item_id>", views.listing, name="listing"),
+    path("add_bid", views.add_bid, name="add_bid")
 ]
