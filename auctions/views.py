@@ -91,36 +91,39 @@ def create_item(request):
     
 def listing(request, item_id):
     item = AuctionList.objects.get(pk=item_id)
+    user = request.user
     bids = item.bids.order_by('-price').values()
 
-    if not bids:
-        price = item.starting_bid
+    if request.method == "POST":
+        if not request.user.is_authenticated:
+            return HttpResponseRedirect(reverse("login"))
+        
+        if request.type == "watchlist":
+            new_watchllist = WatchList(watching=user, item=item)
+            new_watchllist.save()
+
+            return HttpResponseRedirect(reverse("listing", args=[item_id]))
+        
+        elif request.type == "bids":
+            pass
+    
     else:
-        price = bids.first().price
+        if not bids:
+            price = item.starting_bid
+        else:
+            price = bids.first().price
 
-    #if user is None, then not logged in
-    user = None
-    if request.user.is_authenticated:
-        user=request.user
-    
-    return render(request, "auctions/item.html", {
-        "item":item,
-        "bids":bids,
-        "user":user,
-        "price":price,
-    })
-
-def add_to_watchlist(request, item_id):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse("login"))
-    
-    item = AuctionList.objects.get(pk=item_id)
-    user = request.user
-
-    new_watchllist = WatchList(watching=user, item=item)
-    new_watchllist.save()
-
-    return HttpResponseRedirect(reverse("item", args=[item_id]))
+        #if user is None, then not logged in
+        user = None
+        if request.user.is_authenticated:
+            user=request.user
+        
+        return render(request, "auctions/item.html", {
+            "item":item,
+            "bids":bids,
+            "user":user,
+            "price":price,
+        })
 
 def add_bid(request):
     pass
