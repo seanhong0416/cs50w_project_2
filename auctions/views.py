@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, AuctionList, Bids, Comments
+from .models import User, AuctionList, Bids, Comments, WatchList
 
 
 def index(request):
@@ -109,6 +109,18 @@ def listing(request, item_id):
         "user":user,
         "price":price,
     })
+
+def add_to_watchlist(request, item_id):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    
+    item = AuctionList.objects.get(pk=item_id)
+    user = request.user
+
+    new_watchllist = WatchList(watching=user, item=item)
+    new_watchllist.save()
+
+    return HttpResponseRedirect(reverse("item", args=[item_id]))
 
 def add_bid(request):
     pass

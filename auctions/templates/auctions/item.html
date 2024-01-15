@@ -3,6 +3,12 @@
 {% block body %}
     <h2>{{ item.title }}</h2>
 
+    <form action="{% url 'add_to_watchlist' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="item" value="{{ item.id }}">
+        <input type="submit" value="Add to Watchlist">
+    </form>
+
     <img src="{{ item.image.url }}", width="800">
 
     <h2>
@@ -20,7 +26,6 @@
     <h2>
         Current Bids:
     </h2>
-    <form action="url '"></form>
     {% if bids %}
         <ul>
             {% for bid in bids %}
