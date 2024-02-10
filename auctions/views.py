@@ -109,7 +109,20 @@ def listing(request, item_id):
         "bids":bids,
         "user":user,
         "price":price,
+        "watched":item.watched,
     })
+
+def watchlist(request, user_id):
+    user = request.user
+    user_watchlist = WatchList.objects.filter(watching=user)
+    items = []
+    for item in user_watchlist:
+        items.append(item.item)
+
+    return render(request, "auctions/index.html", {
+        "items":items,
+    })
+    
 
 def add_to_watchlist(request):
     if not request.user.is_authenticated:

@@ -5,7 +5,7 @@
     <a href="{% url 'create_item' %}">Create New Listing</a>
     <br>
     {% for item in items %}
-    <a href="{% url 'listing' item.id%}">
+    <a href="{% url 'listing' item.id %}">
         <table class="listing_table" width="800px">
             <tr>
                 <td rowspan="5" width="400px">
