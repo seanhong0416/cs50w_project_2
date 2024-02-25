@@ -103,13 +103,24 @@ def listing(request, item_id):
     user = None
     if request.user.is_authenticated:
         user=request.user
+
+    #check if this item is watched by current user
     
+    #get all users watching this item, 
+    #(this only gets the ids)    
+    all_watching = item.watched.values_list('watching', flat=True)
+    #then check is current user is in there.
+    if user.id in all_watching:
+        watched = True
+    else:
+        watched = False
+
     return render(request, "auctions/item.html", {
         "item":item,
         "bids":bids,
         "user":user,
         "price":price,
-        "watched":item.watched,
+        "watched":watched,
     })
 
 def watchlist(request, user_id):
@@ -122,18 +133,20 @@ def watchlist(request, user_id):
     return render(request, "auctions/index.html", {
         "items":items,
     })
-    
 
 def add_to_watchlist(request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse("listing", args=[item_id]))
     user = request.user
     item_id = request.POST["item_id"]
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("listing", args=[item_id]))
     item = AuctionList.objects.get(pk=item_id)
     new_watchllist = WatchList(watching=user, item=item)
     new_watchllist.save()
 
     return HttpResponseRedirect(reverse("listing", args=[item_id]))
+
+def remove_from_watchlist(request):
+    pass
 
 def add_bid(request):
     pass
