@@ -146,7 +146,12 @@ def add_to_watchlist(request):
     return HttpResponseRedirect(reverse("listing", args=[item_id]))
 
 def remove_from_watchlist(request):
-    pass
+    user = request.user
+    item_id = request.POST["item_id"]
+    item = AuctionList.objects.get(pk=item_id)
+    WatchList.objects.get(watching=user, item=item).delete()
+
+    return HttpResponseRedirect(reverse("listing", args=[item_id]))
 
 def add_bid(request):
     pass
