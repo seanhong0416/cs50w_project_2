@@ -36,6 +36,15 @@
     <h2>
         Current Bids:
     </h2>
+
+    {% if user is not None %}
+            <form action="{% url 'add_bid' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="item_id" value="{{ item.id }}">
+                <input type="submit" value="Add a Bid">
+            </form>
+    {% endif %}
+
     {% if bids %}
         <ul>
             {% for bid in bids %}

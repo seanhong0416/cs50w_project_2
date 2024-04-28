@@ -10,6 +10,7 @@ from .models import User, AuctionList, Bids, Comments, WatchList
 def index(request):
     return render(request, "auctions/index.html", {
         "items":AuctionList.objects.all(),
+        "title":"Active Listings",
     })
 
 
@@ -93,7 +94,8 @@ def listing(request, item_id):
     item = AuctionList.objects.get(pk=item_id)
     user = request.user
     bids = item.bids.order_by('-price').values()
-    
+    watched = False
+
     if not bids:
         price = item.starting_bid
     else:
@@ -104,16 +106,16 @@ def listing(request, item_id):
     if request.user.is_authenticated:
         user=request.user
 
-    #check if this item is watched by current user
-    
-    #get all users watching this item, 
-    #(this only gets the ids)    
-    all_watching = item.watched.values_list('watching', flat=True)
-    #then check is current user is in there.
-    if user.id in all_watching:
-        watched = True
-    else:
-        watched = False
+        #check if this item is watched by current user
+        
+        #get all users watching this item, 
+        #(this only gets the ids)    
+        all_watching = item.watched.values_list('watching', flat=True)
+        #then check is current user is in there.
+        if user.id in all_watching:
+            watched = True
+        else:
+            watched = False
 
     return render(request, "auctions/item.html", {
         "item":item,
@@ -132,6 +134,7 @@ def watchlist(request, user_id):
 
     return render(request, "auctions/index.html", {
         "items":items,
+        "title":"Watchlist",
     })
 
 def add_to_watchlist(request):
@@ -154,4 +157,5 @@ def remove_from_watchlist(request):
     return HttpResponseRedirect(reverse("listing", args=[item_id]))
 
 def add_bid(request):
-    pass
+    user = request.user
+    item_id = request.POST["item_id"]
