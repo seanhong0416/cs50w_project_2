@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
+from django.db.models import Max
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -93,13 +94,13 @@ def create_item(request):
 def listing(request, item_id):
     item = AuctionList.objects.get(pk=item_id)
     user = request.user
-    bids = item.bids.order_by('-price').values()
+    bids = item.bids.order_by('-price')
     watched = False
 
     if not bids:
         price = item.starting_bid
     else:
-        price = bids.first().price
+        price = bids.values().first()['price']
 
     #if user is None, then not logged in
     user = None
@@ -156,6 +157,14 @@ def remove_from_watchlist(request):
 
     return HttpResponseRedirect(reverse("listing", args=[item_id]))
 
+
 def add_bid(request):
     user = request.user
     item_id = request.POST["item_id"]
+    bid_price = request.POST["bid_price"]
+
+    item = AuctionList.objects.get(pk=item_id)
+    new_bid = Bids(item=item, price=bid_price, bidder=user)
+    new_bid.save()
+
+    return HttpResponseRedirect(reverse("listing", args=[item_id]))
