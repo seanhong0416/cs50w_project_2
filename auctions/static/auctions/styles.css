@@ -11,5 +11,9 @@ body {
 }
 
 td {
-    border: 1px solid gainsboro
+    border: 1px solid gainsboro;
+}
+
+.red_text {
+    color: red;
 }

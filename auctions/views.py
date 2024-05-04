@@ -93,6 +93,8 @@ def create_item(request):
     
 def listing(request, item_id):
     item = AuctionList.objects.get(pk=item_id)
+    if item.is_closed:
+        return HttpResponseRedirect(reverse("closed_item", args=[item_id]))
     user = request.user
     bids = item.bids.order_by('-price')
     watched = False
@@ -136,6 +138,7 @@ def watchlist(request, user_id):
     return render(request, "auctions/index.html", {
         "items":items,
         "title":"Watchlist",
+        "used_for_watchlist":True,
     })
 
 def add_to_watchlist(request):
@@ -168,3 +171,32 @@ def add_bid(request):
     new_bid.save()
 
     return HttpResponseRedirect(reverse("listing", args=[item_id]))
+
+def close_auction(request):
+    user = request.user
+    item_id = request.POST["item_id"]
+    item = AuctionList.objects.get(pk=item_id)
+    item.is_closed = True
+    item.save()
+
+    return HttpResponseRedirect(reverse("closed_item", args=[item_id]))
+
+def closed_item(request, item_id):
+    item = AuctionList.objects.get(pk=item_id)
+    user = request.user
+    bids = item.bids.order_by('-price')
+
+    if not bids:
+        price = item.starting_bid
+        buyer = None
+    else:
+        price = bids.values().first()['price']
+        buyer = bids.values().first()['bidder']
+
+    return render(request, "auctions/closed_item.html", {
+        "item":item,
+        "bids":bids,
+        "user":user,
+        "price":price,
+        "buyer":buyer,
+    })

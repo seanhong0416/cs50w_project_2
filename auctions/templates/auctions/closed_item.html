@@ -1,0 +1,58 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2 class="red_text">Closed Item
+        {% if user ==  buyer %}
+            :Congratulations! You are the winner of this item.
+        {% elif user == item.owner %}
+            :Your item is successfully sold!
+        {% endif %}
+    </h2>
+    <h2>{{ item.title }}</h2>
+
+    <img src="{{ item.image.url }}", width="800">
+
+    <h2>
+        Price:
+        <span class="not_bold">
+            {{ price }}
+        </span>
+    </h2>
+
+    <h2>
+        Description:
+    </h2>
+    {{ item.description }}
+
+    <h2>
+        Bid History
+    </h2>
+
+    {% if bids %}
+        <ul>
+            {% for bid in bids %}
+                <li>
+                    {{ bid }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        No Bidding History.
+    {% endif %}
+
+    <h2>
+        Comments History
+    </h2>
+    {% if comments %}
+        <ul>
+            {% for comment in comments %}
+                <li>
+                    {{ comment }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        No Comments History.
+    {% endif %}
+
+{% endblock %}

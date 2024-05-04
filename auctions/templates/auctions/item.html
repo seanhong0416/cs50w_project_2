@@ -3,6 +3,14 @@
 {% block body %}
     <h2>{{ item.title }}</h2>
 
+    {% if user == item.owner %}
+        <form action="{% url 'close_auction' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="item_id" value="{{ item.id }}">
+            <input type="submit" value="Close Auction">
+        </form>
+    {% endif %}
+
     {% if user is not None %}
         {% if watched %}
             <form action="{% url 'remove_from_watchlist' %}" method="post">

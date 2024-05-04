@@ -2,7 +2,9 @@
 
 {% block body %}
     <h2>{{ title }}</h2>
+    {% if not used_for_watchlist %}
     <a href="{% url 'create_item' %}">Create New Listing</a>
+    {% endif %}
     <br>
     {% for item in items %}
     <a href="{% url 'listing' item.id %}">
